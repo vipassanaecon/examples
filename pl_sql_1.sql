@@ -90,7 +90,6 @@ begin
                 else 'I'
                 end into r_license_class.entity_type_ind from dual;
 ​
-    -- allowed
     select decode(cur_lc.license_class, 'PRO','Y','LLP','Y','TTL','Y','BBA','Y','TMP','Y','MGA','Y','N')
     into r_license_class.appt_allowed from dual;*/
 ​

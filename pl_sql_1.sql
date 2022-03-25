@@ -2,7 +2,7 @@ alter session set current_schema = stbs;
 set serveroutput on;
 set define off;
 ​
-prompt ----- START License class-----
+prompt ----- START License Class-----
 ​
 declare
 ​
@@ -30,7 +30,7 @@ declare
               decode(trim(ddval_cd), 'BANR', 'BB', 'AJ', 'ADJ', 'BA', 'BB', 'AJDHS', 'ADJ',  'RPRDCR', 'PRO', 'NPRDCR', 'PRO', 'RPAJ', 'PAD', 'NPAJ', 'PAD', 'TRPRDCR', 'TMP',
                                     'RSL', 'SLB', 'NSL', 'SLB', 'LSEB', 'LSB', 'LSEP', 'LSP', 'MGA', 'MGA') as license_class,
               case
-                   when trim(long_dscr) = 'Independent Adjuster - Designated' then 'Adjuster'
+                   when trim(long_dscr) = 'Ind Adjust - Designate' then 'Adjust'
                    else regexp_replace (trim(regexp_replace (trim(long_dscr), '^(\S*)', '')), ' Individual','')
               end as license_class_desc,
               null expiration_month,
@@ -38,7 +38,7 @@ declare
               decode(end_dte, null, 'Y','N') as isactive,
               min(beg_dte) as eff_date,
               max(end_dte) as term_date
-        from iddata.codelist
+        from stdata.code
         where cddmn_name = 'LIC_TYPE_CD'
         and not exists
           (
@@ -52,8 +52,8 @@ declare
           decode(trim(ddval_cd), 'BANR', 'BB', 'AJ', 'ADJ', 'BA', 'BB', 'AJDHS', 'ADJ',  'RPRDCR', 'PRO', 'NPRDCR', 'PRO', 'RPAJ', 'PAD', 'NPAJ', 'PAD', 'TRPRDCR', 'TMP',
                                 'RSL', 'SLB', 'NSL', 'SLB', 'LSEB', 'LSB', 'LSEP', 'LSP', 'MGA', 'MGA'),
           case
-             when trim(long_dscr) = 'Independent Adjuster - Designated' then 'Adjuster'
-             else REGEXP_REPLACE (trim(regexp_replace (trim(long_dscr), '^(\S*)', '')), ' Individual','')
+             when trim(long_dscr) = 'Ind Adjust - Designate' then 'Adjust'
+             else regexp_replace (trim(regexp_replace (trim(long_dscr), '^(\S*)', '')), ' Individual','')
           end,
           decode(end_dte, null, 'Y','N');
 ​
@@ -63,7 +63,7 @@ declare
       if is_real_migration then
         r_migration_log.migration_log_id := migration_log_id.nextval;
         r_migration_log.jurisdiction_id := c_state_id;
-        r_migration_log.script_name := 'producer_config_license_class';
+        r_migration_log.script_name := 'prod_config_license_class';
         r_migration_log.script_timestamp := systimestamp;
         r_migration_log.activity := p_activity;
         r_migration_log.process_type := null;
@@ -90,15 +90,7 @@ begin
                 else 'I'
                 end into r_license_class.entity_type_ind from dual;
 ​
-    select case when cur_lc.license_class in ('AGT','BRK','VSB','LSB','REI','SLB') then 'N'
-                else 'Y'
-                end into r_license_class.ind_loa_reqd from dual;
-​
-    select case when cur_lc.license_class in ('LLP','PED') then 'Y'
-                else 'N'
-                end into r_license_class.be_loa_reqd from dual;
-​
-    -- appt allowed
+    -- allowed
     select decode(cur_lc.license_class, 'PRO','Y','LLP','Y','TTL','Y','BBA','Y','TMP','Y','MGA','Y','N')
     into r_license_class.appt_allowed from dual;*/
 ​
@@ -146,7 +138,7 @@ begin
 ​
 -- update TMP license_class_description
   update license_class
-  set license_class_desc = 'Temp Producer'
+  set license_class_desc = 'Temp Prod'
   where license_class = 'TMP'
   and jurisdiction_id = c_state_id;
 ​

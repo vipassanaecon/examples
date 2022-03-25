@@ -1,4 +1,4 @@
-alter session set current_schema = sbs;
+alter session set current_schema = stbs;
 set serveroutput on;
 set define off;
 ​

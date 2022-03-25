@@ -48,14 +48,14 @@ declare
           and   license_class   =  decode(trim(ddval_cd), 'BANR', 'BB', 'AJ', 'ADJ', 'BA', 'BB', 'AJDHS', 'ADJ',  'RPRDCR', 'PRO', 'NPRDCR', 'PRO', 'RPAJ', 'PAD', 'NPAJ', 'PAD', 'TRPRDCR', 'TMP',
                                 'RSL', 'SLB', 'NSL', 'SLB', 'LSEB', 'LSB', 'LSEP', 'LSP', 'MGA', 'MGA')
           )
-          group by
-          decode(trim(ddval_cd), 'BANR', 'BB', 'AJ', 'ADJ', 'BA', 'BB', 'AJDHS', 'ADJ',  'RPRDCR', 'PRO', 'NPRDCR', 'PRO', 'RPAJ', 'PAD', 'NPAJ', 'PAD', 'TRPRDCR', 'TMP',
-                                'RSL', 'SLB', 'NSL', 'SLB', 'LSEB', 'LSB', 'LSEP', 'LSP', 'MGA', 'MGA'),
-          case
-             when trim(long_dscr) = 'Ind Adjust - Designate' then 'Adjust'
-             else regexp_replace (trim(regexp_replace (trim(long_dscr), '^(\S*)', '')), ' Individual','')
-          end,
-          decode(end_dte, null, 'Y','N');
+        group by
+        decode(trim(ddval_cd), 'BANR', 'BB', 'AJ', 'ADJ', 'BA', 'BB', 'AJDHS', 'ADJ',  'RPRDCR', 'PRO', 'NPRDCR', 'PRO', 'RPAJ', 'PAD', 'NPAJ', 'PAD', 'TRPRDCR', 'TMP',
+                              'RSL', 'SLB', 'NSL', 'SLB', 'LSEB', 'LSB', 'LSEP', 'LSP', 'MGA', 'MGA'),
+        case
+           when trim(long_dscr) = 'Ind Adjust - Designate' then 'Adjust'
+           else regexp_replace (trim(regexp_replace (trim(long_dscr), '^(\S*)', '')), ' Individual','')
+        end,
+        decode(end_dte, null, 'Y','N');
 ​
 --procedures
   procedure p_migration_log (p_activity in varchar2) is pragma autonomous_transaction;
